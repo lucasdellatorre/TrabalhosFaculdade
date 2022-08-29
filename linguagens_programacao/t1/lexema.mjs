@@ -19,6 +19,10 @@ class LexerUtil {
   isLetter(input) {
     return input.match(/[a-z]/i)
   }
+
+  formatTriple(key, value) {
+    return `(\'${key}\', ${value})`
+  }
 }
 
 (() => {
@@ -55,7 +59,7 @@ class LexerUtil {
       const response = lexer.isLexemaValid(aux)
       if (response !== false) {
         const value = lexer.returnTokenValue(aux)
-        result.push(value);
+        result.push(lexer.formatTriple(aux, value));
         aux = "";
         continue;
       }
@@ -64,14 +68,16 @@ class LexerUtil {
         nextChar = e.charAt(i + 1)
         if (!lexer.isLetter(nextChar) && !lexer.isDigit(nextChar)) {
           if (lexer.isLetter(variable.charAt(0))) {
-            result.push('VAR')
+            result.push(lexer.formatTriple(variable, 'VAR'))
           }
           if (lexer.isDigit(variable.charAt(0)))
-            result.push('NUM')
+            result.push(lexer.formatTriple(variable, 'NUM'))
         }
         aux = ""
       }
     }
   })
-  console.log(result)
+  result.forEach(e => {
+    console.log(e)
+  })
 })();
