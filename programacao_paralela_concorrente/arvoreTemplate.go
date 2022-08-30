@@ -84,8 +84,36 @@ func busca(r *Nodo, v int) bool {
 	return false
 }
 
+// 2b
+
+func buscaConcorrente(r *Nodo, v int) bool{
+  c1 := make(chan bool, 100)
+
+  if r.v == v { return true }
+  
+  go buscac(r.e, c1, v)
+  go buscac(r.d, c1, v)
+
+  result := <-c1
+  return result;
+}
+
+func buscac(r *Nodo, c1 chan bool, v int) {
+	if r != nil {
+		if v == r.v {
+			c1 <- true
+		} else if v < r.v {
+			buscac(r.e, c1, v)
+		} else {
+			buscac(r.d, c1, v)
+		}
+	}
+	c1 <- false
+}
+
 // 3a
-func retornaParImpar2(r *Nodo, saidaP chan int, saidaI chan int, fin chan struct{}) {
+
+func retornaParImpar(r *Nodo, saidaP chan int, saidaI chan int, fin chan struct{}) {
 	if r != nil {
 		if r.v % 2 == 0 {
 		  fmt.Print(r.v, "par, ")
@@ -94,9 +122,46 @@ func retornaParImpar2(r *Nodo, saidaP chan int, saidaI chan int, fin chan struct
 		  fmt.Print(r.v, "impar, ")
       saidaI <- r.v
     }
-		retornaParImpar2(r.e, saidaP, saidaI, fin)
-		retornaParImpar2(r.d, saidaP, saidaI, fin)
+		retornaParImpar(r.e, saidaP, saidaI, fin)
+		retornaParImpar(r.d, saidaP, saidaI, fin)
 	}
+}
+
+// 3b
+
+
+func retornaParImparConcorrente(r *Nodo) {
+  saidaP := make(chan int, 30)
+
+  saidaI := make(chan int, 30)
+
+  chfin := make(chan struct{}, 1)
+
+  retornaParImparc(r.e, saidaP, saidaI, chfin)
+
+  <- chfin
+
+  for i := 0; i < 100; i++ {
+    fmt.Println(<-saidaP)
+    fmt.Println(<-saidaI)
+  }
+}
+
+func retornaParImparc(r *Nodo, saidaP chan int, saidaI chan int, fin chan struct{}) {
+	if r != nil {
+		if r.v % 2 == 0 {
+      saidaP <- r.v
+		} else {
+      saidaI <- r.v
+    }
+    if r.e != nil {
+      retornaParImparc(r.e, saidaP, saidaI, fin)
+    }
+    if r.e != nil {
+      retornaParImparc(r.d, saidaP, saidaI, fin)
+    }
+	}
+  fin <- struct{}{}
 }
 
 func main() {
@@ -117,16 +182,16 @@ func main() {
 				d: &Nodo{v: 19, e: nil, d: nil}}}}
 
   // saidaP := make(chan int, 30)
-
+retornaParImparConcorrente(root);
   // saidaI := make(chan int, 30)
 
   // chfin := make(chan struct{}, 1)
 
   // retornaParImpar2(root, saidaP, saidaI, chfin);
 
-  result := somaConcorrente(root)
+  // result := buscaConcorrente(root, -1)
 
-  fmt.Println(result)
+  // fmt.Println(result)
 
   // for i:=0; i < len(saidaP); i++ {
   //   fmt.Println(<-fin)
