@@ -37,11 +37,36 @@ func caminhaERD(r *Nodo) {
 }
 
 // 1a
+
 func soma(r *Nodo) int {
 	if r == nil {
 		return 0
 	}
 	return r.v + soma(r.d) + soma(r.e)
+}
+
+// 1b
+
+func somaConcorrente(r *Nodo) int {
+  c1 := make(chan int, 100)
+
+  sum := r.v
+  go somac(r.e, c1);
+  go somac(r.d, c1);
+
+  for i := 0; i < 100; i++ {
+
+    sum += <-c1
+  }
+  return sum;
+}
+
+func somac(r *Nodo, c1 chan int) {
+	if r != nil {
+  c1 <- r.v
+  somac(r.e, c1)
+  somac(r.d, c1)
+	}
 }
 
 //2a
@@ -57,6 +82,21 @@ func busca(r *Nodo, v int) bool {
 		}
 	}
 	return false
+}
+
+// 3a
+func retornaParImpar2(r *Nodo, saidaP chan int, saidaI chan int, fin chan struct{}) {
+	if r != nil {
+		if r.v % 2 == 0 {
+		  fmt.Print(r.v, "par, ")
+      saidaP <- r.v
+		} else {
+		  fmt.Print(r.v, "impar, ")
+      saidaI <- r.v
+    }
+		retornaParImpar2(r.e, saidaP, saidaI, fin)
+		retornaParImpar2(r.d, saidaP, saidaI, fin)
+	}
 }
 
 func main() {
@@ -76,14 +116,19 @@ func main() {
 				e: &Nodo{v: 17, e: nil, d: nil},
 				d: &Nodo{v: 19, e: nil, d: nil}}}}
 
-	caminhaERD(root)
+  // saidaP := make(chan int, 30)
 
-	result := soma(root)
+  // saidaI := make(chan int, 30)
 
-	fmt.Println(result)
+  // chfin := make(chan struct{}, 1)
 
-	hasElement := busca(root, 18)
+  // retornaParImpar2(root, saidaP, saidaI, chfin);
 
-	fmt.Println(hasElement)
+  result := somaConcorrente(root)
 
+  fmt.Println(result)
+
+  // for i:=0; i < len(saidaP); i++ {
+  //   fmt.Println(<-fin)
+  // }
 }
