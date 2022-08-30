@@ -36,6 +36,29 @@ func caminhaERD(r *Nodo) {
 	}
 }
 
+// 1a
+func soma(r *Nodo) int {
+	if r == nil {
+		return 0
+	}
+	return r.v + soma(r.d) + soma(r.e)
+}
+
+//2a
+
+func busca(r *Nodo, v int) bool {
+	if r != nil {
+		if v == r.v {
+			return true
+		} else if v < r.v {
+			return busca(r.e, v)
+		} else {
+			return busca(r.d, v)
+		}
+	}
+	return false
+}
+
 func main() {
 	root := &Nodo{v: 10,
 		e: &Nodo{v: 5,
@@ -54,5 +77,13 @@ func main() {
 				d: &Nodo{v: 19, e: nil, d: nil}}}}
 
 	caminhaERD(root)
-	fmt.Println()
+
+	result := soma(root)
+
+	fmt.Println(result)
+
+	hasElement := busca(root, 18)
+
+	fmt.Println(hasElement)
+
 }
