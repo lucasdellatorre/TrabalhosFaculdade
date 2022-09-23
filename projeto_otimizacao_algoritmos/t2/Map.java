@@ -45,12 +45,17 @@ public class Map {
   }
 
   public void printMap() {
+    int sum = 0;
     for (int row = 0; row < map.size(); row++) {
       for (int col = 0; col < map.get(0).size(); col++) {
+        if (map.get(col).get(row).trim() != "x") {
+          sum += Integer.parseInt(map.get(row).get(col));
+        }
         System.out.print(map.get(row).get(col) + ",");
       }
       System.out.println();
     }
+    System.out.println(sum);
   }
 
   public ArrayList<ArrayList<String>> getMap() {
