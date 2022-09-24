@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 class Main {
@@ -14,60 +13,41 @@ class Main {
   public static void main(String[] args) {
     Main main;
     Map m;
-    ArrayList<ArrayList<String>> map;
+    String[][] map;
     final int SIZE, POS_INIT_ROW, POS_INIT_COL;
 
     main = new Main();
     m = new Map(args[0]);
     map = m.getMap();
 
-    SIZE = map.size();
+    SIZE = map.length;
     POS_INIT_ROW = SIZE - 1;
     POS_INIT_COL = 0;
-    System.out.println(map.get(POS_INIT_ROW).get(POS_INIT_COL));
-    int golds = main.giveMeGold2(POS_INIT_ROW, POS_INIT_COL, map, SIZE, Main.negInf, 0, 0);
-    System.out.println("golds" + golds);
+    int golds = main.qGold(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
     m.printMap();
-
+    System.out.println(golds);
   }
 
-  int giveMeGold(int x, int y, ArrayList<ArrayList<String>> map, int size, int best, int bag, int res) {
-    if (x < 0 || x > size)
+  int qGold(String[][] map, int row, int col, int size) {
+    if (row < 0 || row >= size) {
       return 0;
-    if (y < 0 || y > size)
-      return 0;
-    if (map.get(x).get(y) == "x")
-      return 0;
-
-    int gold = Integer.parseInt(map.get(x).get(y));
-
-    System.out.println(gold);
-    res = giveMeGold(x, y - 1, map, size, best, bag, res);
-    if (res < best) {
-      best = res;
-      bag += best;
-    } else {
-      best = giveMeGold(x + 1, y, map, size, best, bag, res);
-      bag += best;
     }
-    return bag;
-  }
-
-    int giveMeGold2(int x, int y, ArrayList<ArrayList<String>> map, int size, int best, int bag, int res) {
-    if (x == 0 && y == size - 1)
-    {
-      System.out.println("oi");
-      return Integer.parseInt(map.get(x).get(y));
+    if (col < 0 || col >= size) {
+      return 0;
     }
-      
-    if (x < 0 || x >= size)
+    if (map[row][col].equals("x")) {
       return 0;
-    if (y < 0 || y >= size)
-      return 0;
-    if (map.get(x).get(y) == "x")
-      return 0;
+    }
 
-    System.out.println("[" + x + "][" + y + "]");
-    return giveMeGold2(x - 1, y, map, size, best, bag, res) + giveMeGold2(x, y + 1, map, size, best, bag, res);
+    int res = qGold(map, row - 1, col, size);
+    int res1 = qGold(map, row, col + 1, size);
+    int res2 = qGold(map, row - 1, col + 1, size);
+
+    return (getMax(res, res1, res2) + Integer.parseInt(map[row][col]));
   }
+
+  int getMax(int x, int y, int z) {
+    return Math.max(Math.max(x, y), z);
+  }
+
 }
