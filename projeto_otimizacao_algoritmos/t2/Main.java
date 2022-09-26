@@ -10,8 +10,9 @@ import java.util.Scanner;
 
 class Main {
   static int negInf = -1000000000;
-  static int[][] M;
-  static LinkedList<String> P;
+  static int[][] M; // cache for recursive solution
+  static int[][] Table; 
+  static LinkedList<String> P; // best player path
   final String DIRECTION_NE = "NE";
   final String DIRECTION_N = "N";
   final String DIRECTION_E = "E";
@@ -31,35 +32,88 @@ class Main {
     P = new LinkedList<>();
     POS_INIT_ROW = SIZE - 1;
     POS_INIT_COL = 0;
+
     // m.printMap();
-    int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
+
+    // 1 - Solucao recursiva
+    // int golds = main.qGold(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
+
+    // 2 - Solucao recursiva com cache
+    // int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
+
+    // 3 - Solucao nao recursiva
+    int golds = main.qGoldNotRecursive(map, SIZE);
+
+    /* saida de dados */
     System.out.println("Quantidade de ouro: " + golds);
-    System.out.println();
-    // for (int row = 0; row < M.length; row++) {
-    // for (int col = 0; col < M[0].length; col++) {
-    // System.out.print(M[row][col] + ",");
-    // }
-    // System.out.println();
-    // }
-    main.e();
+    main.eTable(); // realiza a extracao do caminho
     System.out.println("caminho: " + P.toString());
+     for (int row = 0; row < M.length; row++) {
+      for (int col = 0; col < M[0].length; col++) {
+        System.out.print(M[row][col] + ",");
+      }
+      System.out.println();
+    }
   }
 
-  void e() {
-    int row = M.length - 1;
-    int col = 0;
+  void eTable() {
+    int row, col;
+    int down, left, diagonal;
+    int max;
+
+    row = 0;
+    col = M.length - 1;
+    while (row != M.length - 1 || col != 0) {
+      down = Integer.MIN_VALUE;
+      left = Integer.MIN_VALUE;
+      diagonal = Integer.MIN_VALUE;
+      max = 0;
+      if (row + 1 > M.length - 1 && col - 1 >= 0) { //colado na parte de baixo
+        left = M[row][col - 1];
+        max = left;
+      } else if (row + 1 < M.length - 1 && col - 1 < 0) { //colado na parede esquerda
+        down = M[row + 1][col];
+        max = down;
+      } else {
+        down = M[row + 1][col];
+        left = M[row][col - 1];
+        diagonal = M[row + 1][col - 1];
+
+        max = getMax(down, left, diagonal);
+      }
+      if (max == down) {
+        P.add(DIRECTION_N);
+        row++;
+      } else if (max == left) {
+        P.add(DIRECTION_E);
+        col--;
+      } else {
+        P.add(DIRECTION_NE);
+        row++;
+        col--;
+      }
+    }
+  }
+
+  void eRecursao() {
+    int row, col;
+    int up, right, diagonal;
+    int max;
+
+    row = M.length - 1;
+    col = 0;
     while (row != 0 || col != M.length - 1) {
-      int up = Integer.MIN_VALUE;
-      int right = Integer.MIN_VALUE;
-      int diagonal = Integer.MIN_VALUE;
-      int max = 0;
-      if (row - 1 < 0 && col + 1 < M.length) {
+      up = Integer.MIN_VALUE;
+      right = Integer.MIN_VALUE;
+      diagonal = Integer.MIN_VALUE;
+      max = 0;
+      if (row - 1 < 0 && col + 1 < M.length) { // colado na parte de cima
         right = M[row][col + 1];
         max = right;
-      } else if (row - 1 >= 0 && col + 1 > M.length - 1) {
+      } else if (row - 1 >= 0 && col + 1 > M.length - 1) { // colado na parede direita
         up = M[row - 1][col];
         max = up;
-      } else {
+      } else { // outras celulas
         up = M[row - 1][col];
         right = M[row][col + 1];
         diagonal = M[row - 1][col + 1];
@@ -121,47 +175,47 @@ class Main {
       return M[row][col];
     }
 
-    int res = qGoldMem(map, row - 1, col, size);
-    int res1 = qGoldMem(map, row, col + 1, size);
-    int res2 = qGoldMem(map, row - 1, col + 1, size);
+    int res = qGoldMem(map, row - 1, col, size); // up
+    int res1 = qGoldMem(map, row, col + 1, size); // right
+    int res2 = qGoldMem(map, row - 1, col + 1, size); // d
 
     return M[row][col] = getMax(res, res1, res2) + Integer.parseInt(map[row][col]);
   }
 
-  // int qGoldNotRecursive(String[][] map, int size) {
-  // M[0][size - 1] = Integer.parseInt(map[0][size - 1]);
+  // table
+  int qGoldNotRecursive(String[][] map, int size) {
+    // initial pos
+    M[size - 1][0] = Integer.parseInt(map[size - 1][0]);
 
-  // botton row
+    // botton row
 
-  // for (int i = 1; i < size; i++) {
-  // if (map[size - 1][i].equals("x"))
-  // M[size - 1][i] = negInf;
-  // else
-  // M[size - 1][i] = M[size - 1][i - 1] + Integer.parseInt(map[size - 1][i]);
-  // }
+    for (int i = 1; i < size; i++) {
+      if (map[size - 1][i].equals("x"))
+        M[size - 1][i] = negInf;  
+      else
+        M[size - 1][i] = M[size - 1][i - 1] + Integer.parseInt(map[size - 1][i]);
+    }
 
-  // // left column
+    // left column
 
-  // for (int i = 1; i < size; i++) {
-  // if (map[i][0].equals("x"))
-  // M[i][0] = negInf;
-  // else
-  // M[i][0] = M[i - 1][0] + Integer.parseInt(map[i][0]);
-  // }
+    for (int i = size - 2; i >= 0; i--) {
+      if (map[i][0].equals("x"))
+        M[i][0] = negInf;
+      else
+        M[i][0] = M[i + 1][0] + Integer.parseInt(map[i][0]);
+    }
 
-  // for (int row = 0; row < size; row++) {
-  // for (int col = 0; col < size; col++) {
-  // M[row][col] = map[row][col];
-  // if (row > 0 && col > 0 ) {
-  // M[row][col] += getMax(M[i - 1][col], M[i][j - 1], )
-  // }
-  // if (!map[row][col].equals("x"))
-  // M[row][col] = getMax(M[row - 1][col], M[row][col + 1], M[row - 1][col + 1]) +
-  // Integer.parseInt(map[row][col]);
-  // }
-  // }
-  // return M[size - 1][0];
-  // }
+    for (int row = size - 2; row >= 0; row--) {
+      for (int col = 1; col < size; col++) {
+        if (map[row][col].equals("x"))
+          M[row][col] = negInf;
+        else
+          M[row][col] = getMax(M[row][col - 1], M[row + 1][col], M[row + 1][col - 1]) + Integer.parseInt(map[row][col]);
+      }
+    }
+
+    return M[0][size - 1];
+  }
 
   int getMax(int x, int y, int z) {
     return Math.max(Math.max(x, y), z);
