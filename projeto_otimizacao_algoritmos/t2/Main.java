@@ -31,45 +31,52 @@ class Main {
     P = new LinkedList<>();
     POS_INIT_ROW = SIZE - 1;
     POS_INIT_COL = 0;
-    m.printMap();
+    // m.printMap();
     int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
-    // int golds = main.qGoldMem(map, SIZE);
-    System.out.println(golds);
+    System.out.println("Quantidade de ouro: " + golds);
     System.out.println();
-    for (int row = 0; row < M.length; row++) {
-      for (int col = 0; col < M[0].length; col++) {
-        System.out.print(M[row][col] + ",");
-      }
-      System.out.println();
-    }
-    main.extractGoldR(POS_INIT_ROW, POS_INIT_COL, SIZE);
-    P.forEach(System.out::println);
+    // for (int row = 0; row < M.length; row++) {
+    // for (int col = 0; col < M[0].length; col++) {
+    // System.out.print(M[row][col] + ",");
+    // }
+    // System.out.println();
+    // }
+    main.e();
+    System.out.println("caminho: " + P.toString());
   }
 
-  void extractGoldR(int row, int col, int size) {
-    System.out.println(row);
-    if (row < 0 || row >= size) {
-      return;
-    }
-    if (col < 0 || col >= size) {
-      return;
-    }
+  void e() {
+    int row = M.length - 1;
+    int col = 0;
+    while (row != 0 || col != M.length - 1) {
+      int up = Integer.MIN_VALUE;
+      int right = Integer.MIN_VALUE;
+      int diagonal = Integer.MIN_VALUE;
+      int max = 0;
+      if (row - 1 < 0 && col + 1 < M.length) {
+        right = M[row][col + 1];
+        max = right;
+      } else if (row - 1 >= 0 && col + 1 > M.length - 1) {
+        up = M[row - 1][col];
+        max = up;
+      } else {
+        up = M[row - 1][col];
+        right = M[row][col + 1];
+        diagonal = M[row - 1][col + 1];
 
-    int up = M[row - 1][col];
-    int right = M[row][col + 1];
-    int diagonal = M[row - 1][col + 1];
-
-    int max = getMax(up, right, diagonal);
-
-    if (max == up) {
-      extractGoldR(row - 1, col, size);
-      P.add(DIRECTION_N);
-    } else if (max == right) {
-      extractGoldR(row, col + 1, size);
-      P.add(DIRECTION_E);
-    } else {
-      extractGoldR(row - 1, col + 1, size);
-      P.add(DIRECTION_NE);
+        max = getMax(up, right, diagonal);
+      }
+      if (max == up) {
+        P.add(DIRECTION_N);
+        row--;
+      } else if (max == right) {
+        P.add(DIRECTION_E);
+        col++;
+      } else {
+        P.add(DIRECTION_NE);
+        row--;
+        col++;
+      }
     }
   }
 
@@ -96,21 +103,6 @@ class Main {
     return getMax(res, res1, res2) + Integer.parseInt(map[row][col]);
   }
 
-  void getPath(int up, int right, int diagonal) {
-    String ne = "NE";
-    String n = "N";
-    String e = "E";
-
-    int max = getMax(up, right, diagonal);
-
-    if (max == up)
-      P.add(n);
-    else if (max == right)
-      P.add(e);
-    else
-      P.add(ne);
-  }
-
   // com memorização
   int qGoldMem(String[][] map, int row, int col, int size) {
     if (row == 0 && col == size - 1) {
@@ -132,8 +124,6 @@ class Main {
     int res = qGoldMem(map, row - 1, col, size);
     int res1 = qGoldMem(map, row, col + 1, size);
     int res2 = qGoldMem(map, row - 1, col + 1, size);
-
-    getPath(res, res1, res2);
 
     return M[row][col] = getMax(res, res1, res2) + Integer.parseInt(map[row][col]);
   }
