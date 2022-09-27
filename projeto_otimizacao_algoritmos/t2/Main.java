@@ -32,23 +32,16 @@ class Main {
     // int golds = main.qGold(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
 
     // 2 - Solucao recursiva com cache
-    // int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
-    // main.eRecursao(); // realiza a extracao do caminho
+    int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
+    main.eRecursao(); // realiza a extracao do caminho
 
-    // 3 - Solucao nao recursiva
-    int golds = main.qGoldNotRecursive(map, SIZE);
+    // // 3 - Solucao nao recursiva
+    // int golds = main.qGoldNotRecursive(map, SIZE);
     // main.eTable(); // realiza a extracao do caminho
 
     /* saida de dados */
     System.out.println("Quantidade de ouro: " + golds);
     System.out.println("caminho: " + P.toString());
-
-    for (int row = 0; row < M.length; row++) {
-      for (int col = 0; col < M[0].length; col++) {
-        System.out.print(M[row][col] + ",");
-      }
-      System.out.println();
-    }
   }
 
   void eTable() {
@@ -57,22 +50,22 @@ class Main {
     int max;
 
     row = 0;
-    col = Table.length - 1;
-    while (row != Table.length - 1 || col != 0) {
+    col = M.length - 1;
+    while (row != M.length - 1 || col != 0) {
       down = Integer.MIN_VALUE;
       left = Integer.MIN_VALUE;
       diagonal = Integer.MIN_VALUE;
       max = 0;
-      if (row + 1 > Table.length - 1 && col - 1 >= 0) { //colado na parte de baixo
-        left = Table[row][col - 1];
+      if (row + 1 > M.length - 1 && col - 1 >= 0) { //colado na parte de baixo
+        left = M[row][col - 1];
         max = left;
-      } else if (row + 1 < Table.length - 1 && col - 1 < 0) { //colado na parede esquerda
-        down = Table[row + 1][col];
+      } else if (row + 1 < M.length - 1 && col - 1 < 0) { //colado na parede esquerda
+        down = M[row + 1][col];
         max = down;
       } else {
-        down = Table[row + 1][col];
-        left = Table[row][col - 1];
-        diagonal = Table[row + 1][col - 1];
+        down = M[row + 1][col];
+        left = M[row][col - 1];
+        diagonal = M[row + 1][col - 1];
         max = getMax(down, left, diagonal);
       }
       if (max == down) {
