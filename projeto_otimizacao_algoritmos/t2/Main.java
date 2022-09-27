@@ -1,15 +1,7 @@
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
 
 class Main {
-  static int negInf = -1000000000;
+  static int negInf = -10000;
   static int[][] M; // cache for recursive solution
   static int[][] Table; 
   static LinkedList<String> P; // best player path
@@ -29,6 +21,7 @@ class Main {
 
     SIZE = map.length;
     M = new int[SIZE][SIZE];
+    Table = new int[SIZE][SIZE];
     P = new LinkedList<>();
     POS_INIT_ROW = SIZE - 1;
     POS_INIT_COL = 0;
@@ -40,15 +33,17 @@ class Main {
 
     // 2 - Solucao recursiva com cache
     // int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
+    // main.eRecursao(); // realiza a extracao do caminho
 
     // 3 - Solucao nao recursiva
     int golds = main.qGoldNotRecursive(map, SIZE);
+    // main.eTable(); // realiza a extracao do caminho
 
     /* saida de dados */
     System.out.println("Quantidade de ouro: " + golds);
-    main.eTable(); // realiza a extracao do caminho
     System.out.println("caminho: " + P.toString());
-     for (int row = 0; row < M.length; row++) {
+
+    for (int row = 0; row < M.length; row++) {
       for (int col = 0; col < M[0].length; col++) {
         System.out.print(M[row][col] + ",");
       }
@@ -62,33 +57,32 @@ class Main {
     int max;
 
     row = 0;
-    col = M.length - 1;
-    while (row != M.length - 1 || col != 0) {
+    col = Table.length - 1;
+    while (row != Table.length - 1 || col != 0) {
       down = Integer.MIN_VALUE;
       left = Integer.MIN_VALUE;
       diagonal = Integer.MIN_VALUE;
       max = 0;
-      if (row + 1 > M.length - 1 && col - 1 >= 0) { //colado na parte de baixo
-        left = M[row][col - 1];
+      if (row + 1 > Table.length - 1 && col - 1 >= 0) { //colado na parte de baixo
+        left = Table[row][col - 1];
         max = left;
-      } else if (row + 1 < M.length - 1 && col - 1 < 0) { //colado na parede esquerda
-        down = M[row + 1][col];
+      } else if (row + 1 < Table.length - 1 && col - 1 < 0) { //colado na parede esquerda
+        down = Table[row + 1][col];
         max = down;
       } else {
-        down = M[row + 1][col];
-        left = M[row][col - 1];
-        diagonal = M[row + 1][col - 1];
-
+        down = Table[row + 1][col];
+        left = Table[row][col - 1];
+        diagonal = Table[row + 1][col - 1];
         max = getMax(down, left, diagonal);
       }
       if (max == down) {
-        P.add(DIRECTION_N);
+        P.add(0, DIRECTION_N);
         row++;
       } else if (max == left) {
-        P.add(DIRECTION_E);
+        P.add(0, DIRECTION_E);
         col--;
       } else {
-        P.add(DIRECTION_NE);
+        P.add(0, DIRECTION_NE);
         row++;
         col--;
       }
