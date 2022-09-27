@@ -1,47 +1,55 @@
+/*
+ * @authors Lucas Dellatorre de Freitas
+ */
+
+
 import java.util.LinkedList;
 
 class Main {
   static int negInf = -10000;
-  static int[][] M; // cache for recursive solution
-  static int[][] Table; 
+  static int[][] M;
   static LinkedList<String> P; // best player path
   final String DIRECTION_NE = "NE";
   final String DIRECTION_N = "N";
   final String DIRECTION_E = "E";
 
   public static void main(String[] args) {
-    Main main;
-    Map m;
-    String[][] map;
-    final int SIZE, POS_INIT_ROW, POS_INIT_COL;
-
-    main = new Main();
-    m = new Map(args[0]);
-    map = m.getMap();
-
-    SIZE = map.length;
-    M = new int[SIZE][SIZE];
-    Table = new int[SIZE][SIZE];
-    P = new LinkedList<>();
-    POS_INIT_ROW = SIZE - 1;
-    POS_INIT_COL = 0;
-
-    // m.printMap();
-
-    // 1 - Solucao recursiva
-    // int golds = main.qGold(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
-
-    // 2 - Solucao recursiva com cache
-    int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
-    main.eRecursao(); // realiza a extracao do caminho
-
-    // // 3 - Solucao nao recursiva
-    // int golds = main.qGoldNotRecursive(map, SIZE);
-    // main.eTable(); // realiza a extracao do caminho
-
-    /* saida de dados */
-    System.out.println("Quantidade de ouro: " + golds);
-    System.out.println("caminho: " + P.toString());
+    try {
+      Main main;
+      Map m;
+      String[][] map;
+      final int SIZE, POS_INIT_ROW, POS_INIT_COL;
+  
+      main = new Main();
+      m = new Map(args[0]);
+      map = m.getMap();
+  
+      SIZE = map.length;
+      M = new int[SIZE][SIZE];
+      P = new LinkedList<>();
+      POS_INIT_ROW = SIZE - 1;
+      POS_INIT_COL = 0;
+  
+      // m.printMap();
+  
+      // 1 - Solucao recursiva
+      // int golds = main.qGold(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
+  
+      // 2 - Solucao recursiva com cache
+      int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
+      main.eRecursao(); // realiza a extracao do caminho
+  
+      // // 3 - Solucao nao recursiva
+      // int golds = main.qGoldNotRecursive(map, SIZE);
+      // main.eTable(); // realiza a extracao do caminho
+  
+      /* saida de dados */
+      System.out.println("Quantidade de ouro: " + golds);
+      System.out.println("caminho: " + P.toString());
+    } catch (Exception io) {
+      System.out.println("Erro: informe o arquivo de teste no formato 'testes/nome-do-arquivo.txt'");
+    }
+    
   }
 
   void eTable() {

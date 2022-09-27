@@ -1,11 +1,4 @@
-import java.util.ArrayList;
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Map {
@@ -31,7 +24,7 @@ public class Map {
       }
       myReader.close();
     } catch (Exception e) {
-      System.out.println("ixiiii");
+      System.out.println("informe o arquivo de teste no formato 'testes/nome-do-arquivo.txt'");
     }
   }
 
