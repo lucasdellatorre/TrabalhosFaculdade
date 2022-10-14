@@ -1,0 +1,10 @@
+P = porcos, G = galinhas
+
+P = G
+
+Se o número de porcos e galinhas forem iguais, podemos apenas calcular a possibilidade de algum dos tipos de bichos e 
+depois multiplicar por 2, pois a possibilidade de movimentos é equivalente, tanto começando pela galinha, tanto pelo porco.
+
+P > G
+
+P < G
