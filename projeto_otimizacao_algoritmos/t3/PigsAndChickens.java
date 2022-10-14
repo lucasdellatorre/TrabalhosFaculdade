@@ -9,6 +9,11 @@ public class PigsAndChickens {
         this.chickensCounter = chickensCounter;
         this.board = new int[matrixLength][matrixLength];
     }
+    
+    public int countPlays() {
+        System.out.println("cool algorithm here!");
+        return -1;
+    }
 
     public void printBoard() {
         String fence = "";
