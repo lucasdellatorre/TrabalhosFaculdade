@@ -2,7 +2,6 @@
  * @authors Lucas Dellatorre de Freitas
  */
 
-
 import java.util.LinkedList;
 
 class Main {
@@ -19,37 +18,37 @@ class Main {
       Map m;
       String[][] map;
       final int SIZE, POS_INIT_ROW, POS_INIT_COL;
-  
+
       main = new Main();
       m = new Map(args[0]);
       map = m.getMap();
-  
+
       SIZE = map.length;
       M = new int[SIZE][SIZE];
       P = new LinkedList<>();
       POS_INIT_ROW = SIZE - 1;
       POS_INIT_COL = 0;
-  
+
       // m.printMap();
-  
+
       // 1 - Solucao recursiva
       // int golds = main.qGold(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
-  
+
       // 2 - Solucao recursiva com cache
-      int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
-      main.eRecursao(); // realiza a extracao do caminho
-  
+      // int golds = main.qGoldMem(map, POS_INIT_ROW, POS_INIT_COL, SIZE);
+      // main.eRecursao(); // realiza a extracao do caminho
+
       // // 3 - Solucao nao recursiva
-      // int golds = main.qGoldNotRecursive(map, SIZE);
-      // main.eTable(); // realiza a extracao do caminho
-  
+      int golds = main.qGoldNotRecursive(map, SIZE);
+      main.eTable(); // realiza a extracao do caminho
+
       /* saida de dados */
       System.out.println("Quantidade de ouro: " + golds);
       System.out.println("caminho: " + P.toString());
     } catch (Exception io) {
       System.out.println("Erro: informe o arquivo de teste no formato 'testes/nome-do-arquivo.txt'");
     }
-    
+
   }
 
   void eTable() {
@@ -64,10 +63,10 @@ class Main {
       left = Integer.MIN_VALUE;
       diagonal = Integer.MIN_VALUE;
       max = 0;
-      if (row + 1 > M.length - 1 && col - 1 >= 0) { //colado na parte de baixo
+      if (row + 1 > M.length - 1 && col - 1 >= 0) { // colado na parte de baixo
         left = M[row][col - 1];
         max = left;
-      } else if (row + 1 < M.length - 1 && col - 1 < 0) { //colado na parede esquerda
+      } else if (row + 1 < M.length - 1 && col - 1 < 0) { // colado na parede esquerda
         down = M[row + 1][col];
         max = down;
       } else {
@@ -186,7 +185,7 @@ class Main {
 
     for (int i = 1; i < size; i++) {
       if (map[size - 1][i].equals("x"))
-        M[size - 1][i] = negInf;  
+        M[size - 1][i] = negInf;
       else
         M[size - 1][i] = M[size - 1][i - 1] + Integer.parseInt(map[size - 1][i]);
     }
