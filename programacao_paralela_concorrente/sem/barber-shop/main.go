@@ -77,10 +77,12 @@ func customer(customerSem *Semaphore, barberSem *Semaphore) {
 	mutex.Lock()
 	customers--
 	mutex.Unlock()
+  wg.Done()
 }
 
 func barber(customerSem *Semaphore, barberSem *Semaphore) {
 	customerSem.Wait()
 	barberSem.Signal()
 	fmt.Println("cut hair")
+  wg.Done()
 }
