@@ -11,7 +11,7 @@ public class PigsAndChickens {
         this.board = new int[matrixLength][matrixLength];
     }
 
-    public void countPlays() {
+    public int countPlays() {
         int aux = pigsCounter;
         int aux2 = 0;
         int pos = 0;
@@ -21,25 +21,39 @@ public class PigsAndChickens {
             aux2++;
             aux--;
         }
-        // countPlays(pigsCounter, chickensCounter, 0);
+        return countPlays(pigsCounter, chickensCounter, 0);
     }
     
-    private void countPlays(int pig, int chicken, int count) {
+    private int countPlays(int pig, int chicken, int count) {
         int col;
-        for ( col = 1; col <= matrixLength; col++ ) {
-            if ( !possible(pig, chicken, col) ) continue;
+        for ( col = 0; col <= matrixLength; col++ )
+            
+            if ( !possibleChicken(chicken, col) ) continue;
             board[pig][col] = Animals.CHICKEN.getValue();
             if ( chicken == matrixLength ) {
                 printBoard();
                 count++;
-                if (pig == matrixLength - 1 && chicken == matrixLength - 1) {
-                    countPlays(pig + 1, chicken, count);
-                    break;
-                }
             }
             else countPlays(pig, chicken + 1, count);
-            board[pig][col] = 0;
+            board[chicken][col] = 0;
         }
+        return count;
+    }
+
+    private boolean possibleChicken(int chicken, int col) {
+        if ( board[chicken][col] == Animals.PIG.getValue()) return false;
+        if ( board[chicken][col] == Animals.CHICKEN.getValue()) return false;
+        int l1, c1, c2;
+        l1 = chicken - 1;
+        c1 = col - 1;
+        c2 = col + 1;
+        while ( l1 > 0 ) {
+            if ( board[l1][col] == Animals.PIG.getValue()) return false;
+            if (c1 > 0 && board[l1][c1] == Animals.PIG.getValue()) return false;
+            if (c2 < matrixLength && board[l1][c2] == Animals.PIG.getValue()) return false;
+            l1--; c1--; c2--;
+        }
+        return true;
     }
 
     private boolean possible(int pig, int chicken, int col) {
