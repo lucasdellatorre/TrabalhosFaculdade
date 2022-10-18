@@ -12,18 +12,32 @@ public class PigsAndChickens {
     }
 
     public void countPlays() {
-        countPlays(pigsCounter, chickensCounter);
+        int aux = pigsCounter;
+        int aux2 = 0;
+        int pos = 0;
+        while (aux != 0) {
+            if (aux2 == matrixLength) { pos++; aux2 = 0; } 
+            board[pos][aux2] = Animals.PIG.getValue();
+            aux2++;
+            aux--;
+        }
+        // countPlays(pigsCounter, chickensCounter, 0);
     }
     
-    private void countPlays(int pig, int chicken) {
+    private void countPlays(int pig, int chicken, int count) {
         int col;
-        System.out.println("deus me livre");
         for ( col = 1; col <= matrixLength; col++ ) {
-            System.out.println("oi");
             if ( !possible(pig, chicken, col) ) continue;
-            board[pig][col] = Animals.PIG.getValue();
-            if ( pig == matrixLength ) printBoard();
-            else countPlays(pig + 1, chicken);
+            board[pig][col] = Animals.CHICKEN.getValue();
+            if ( chicken == matrixLength ) {
+                printBoard();
+                count++;
+                if (pig == matrixLength - 1 && chicken == matrixLength - 1) {
+                    countPlays(pig + 1, chicken, count);
+                    break;
+                }
+            }
+            else countPlays(pig, chicken + 1, count);
             board[pig][col] = 0;
         }
     }

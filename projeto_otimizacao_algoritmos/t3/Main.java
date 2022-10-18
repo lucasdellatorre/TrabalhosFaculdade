@@ -15,5 +15,6 @@ public class Main {
     int chicken  = Integer.parseInt(args[2]);
     PigsAndChickens pigsAndChickens = new PigsAndChickens(pigs, chicken, matrixLength);
     pigsAndChickens.countPlays();
+    pigsAndChickens.printBoard();
   }
 }
