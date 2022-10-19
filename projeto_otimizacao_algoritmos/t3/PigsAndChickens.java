@@ -26,8 +26,11 @@ public class PigsAndChickens {
     
     private int countPlays(int pig, int chicken, int count) {
         int col;
-        for ( col = 0; col <= matrixLength; col++ )
-            
+        for ( col = 0; col < matrixLength; col++ )
+            // if (chicken == matrixLength - 1 && col == matrixLength - 1) {
+            //     countPlays(pig + 1, chicken, count);
+            //     //invoca porco
+            // }
             if ( !possibleChicken(chicken, col) ) continue;
             board[pig][col] = Animals.CHICKEN.getValue();
             if ( chicken == matrixLength ) {
