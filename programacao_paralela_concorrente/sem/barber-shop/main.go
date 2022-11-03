@@ -9,7 +9,7 @@ var (
 	wg          sync.WaitGroup
 	n           int
 	customers   int
-	mutex       sync.Mutex
+	mutex       *Semaphore
 	customerSem *Semaphore
 	barberSem   *Semaphore
 )
@@ -51,38 +51,40 @@ func (s *Semaphore) Signal() {
 
 func main() {
 	customers = 0
-	n = 3
+	n = 10
+	mutex := NewSemaphore(1)
 	customerSem := NewSemaphore(0)
 	barberSem := NewSemaphore(0)
 
-	wg.Add(2)
-	go customer(customerSem, barberSem)
+	go customer(customerSem, barberSem, mutex)
+
 	go barber(customerSem, barberSem)
-	wg.Wait()
+	var blq chan struct{} = make(chan struct{})
+	<-blq
 }
 
-func customer(customerSem *Semaphore, barberSem *Semaphore) {
-	mutex.Lock()
+func customer(customerSem *Semaphore, barberSem *Semaphore, mutex *Semaphore) {
+	mutex.Wait()
 	if customers == n+1 {
-		mutex.Unlock()
+		mutex.Signal()
 		fmt.Println("balk")
 	}
 	customers++
-	mutex.Unlock()
+	mutex.Signal()
 
 	customerSem.Signal()
 	barberSem.Wait()
 	fmt.Println("get hair cut")
 
-	mutex.Lock()
+	mutex.Wait()
 	customers--
-	mutex.Unlock()
-  wg.Done()
+	mutex.Signal()
 }
 
 func barber(customerSem *Semaphore, barberSem *Semaphore) {
-	customerSem.Wait()
-	barberSem.Signal()
-	fmt.Println("cut hair")
-  wg.Done()
+	for {
+		customerSem.Wait()
+		barberSem.Signal()
+		fmt.Println("cut hair")
+	}
 }
