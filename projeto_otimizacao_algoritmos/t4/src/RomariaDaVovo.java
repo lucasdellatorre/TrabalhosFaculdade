@@ -10,18 +10,26 @@ public class RomariaDaVovo {
 	}
 
 	private void run() {
-		readFile();
+		leArquivo();
 
-		
+		int melhor;
+		for (int g = 0; g < 300; g++) {
+			calculaHeuristica();
+			printPopulacao();
+		}
 	}
 
 	private void printPopulacao() {
-		for (int i = 0; i < TAM; i++) 
+		String msg;
+		for (int i = 0; i < TAM; i++) {
+			msg = "";
 			for(int j = 0; j < 3; j++)
-				System.out.println(populacao[i][j]);
+				msg += populacao[i][j] + " ";
+			System.out.println(msg);
+		}
 	}
 
-	private void readFile() {
+	private void leArquivo() {
 	    File myObj = new File("data.txt");
 	    try {
 	      Scanner myReader = new Scanner(myObj);
@@ -30,9 +38,9 @@ public class RomariaDaVovo {
 
 	      for (int i = 0; i < TAM; i++) {
 			String[] line = myReader.nextLine().split(" ");
-		for (int j = 0; j < 3; j++) {
-		  populacao[i][j] = line[j];;
-		}
+			for (int j = 0; j < 3; j++) {
+				populacao[i][j] = line[j];
+			}
 	      }
 	      myReader.close();
 	    } catch (Exception e) {
@@ -40,7 +48,22 @@ public class RomariaDaVovo {
 	    }
 	}
 
-	private double distanciaEuclidiana(double x, double y) {
-		return Math.abs(x - y);
+	private double distanciaEuclidiana(double x1, double x2, double y1, double y2) {
+		return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 	}
+
+	void init() {}
+
+	void heuristica() {}
+
+	void calculaHeuristica() {}
+
+	// elitismo
+	void pegaMelhor() {} 
+
+	void torneio() {}
+
+	void crossover() {}
+
+	void mutacao() {}
 }
