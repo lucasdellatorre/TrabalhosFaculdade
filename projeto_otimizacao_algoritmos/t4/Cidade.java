@@ -5,8 +5,6 @@ public class Cidade implements Comparable<Cidade> {
     private double latitude;
     private String codCidade;
     private int id;
-    private HashMap<Integer, Double> mapaDistancia;
-
 
     public Cidade(double longitude, double latitude, String codCidade) {
         this.longitude = longitude;
@@ -23,14 +21,6 @@ public class Cidade implements Comparable<Cidade> {
 
         this.id = Integer.parseInt(aux);
     }    
-
-    public void setMapaDistancia(HashMap<Integer, Double> mapa) {
-        this.mapaDistancia = mapa;
-    }
-
-    public HashMap<Integer, Double> getMapaDistancia() {
-        return this.mapaDistancia;
-    }
 
     public String toString() {
         return "codCidade=" + codCidade + ";latidude=" + this.latitude + ";longitude=" + this.longitude;
