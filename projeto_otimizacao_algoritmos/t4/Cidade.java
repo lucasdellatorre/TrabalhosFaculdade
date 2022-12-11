@@ -1,52 +1,34 @@
-import java.util.HashMap;
-
-public class Cidade implements Comparable<Cidade> {
-    private double longitude;
-    private double latitude;
-    private String codCidade;
-    private int id;
-
-    public Cidade(double longitude, double latitude, String codCidade) {
-        this.longitude = longitude;
-        this.latitude = latitude;
+public class Cidade {
+   private String id;
+   private String codCidade;
+   private double latitude;
+   private double longitude;
+   
+   Cidade(double latitude, double longitude, String codCidade) {
+        this.latitude = longitude;
+        this.longitude= longitude;
         this.codCidade = codCidade;
         String aux = "";
-
         for (int i = 0; i < codCidade.length(); i++) {
             char aChar = codCidade.charAt(i);
             if (Character.isDigit(aChar)) {
                 aux += aChar;
             }
         }
+        this.id = String.valueOf(aux);
+   }
 
-        this.id = Integer.parseInt(aux);
-    }    
 
-    public String toString() {
-        return "codCidade=" + codCidade + ";latidude=" + this.latitude + ";longitude=" + this.longitude;
-    }
 
-    public int getId() {
-        return id;
-    }
+   public double getLatitude() {
+       return latitude;
+   } 
 
-    public String getCodCidade() {
-        return codCidade;
-    }
+   public double getLongitude() {
+       return longitude;
+   }
 
-    public double getLatitude() {
-        return latitude;
-    }
-    public double getLongitude() {
-        return longitude;
-    }
-
-    @Override
-    public int compareTo(Cidade outraCidade) {
-        if (this.id < outraCidade.id)
-            return -1;
-        if (this.id > outraCidade.id)
-            return 1;
-        return 0;
-    }
+   public String getCod() {
+       return cod;
+   }
 }
